@@ -68,6 +68,37 @@ $num_days = $reservation['num_days'];
 
 
 <script>
+function updateRoomTypeOptions() {
+    const selects = document.querySelectorAll('.rtype');
+    const selectedValues = Array.from(selects)
+        .map(sel => sel.value)
+        .filter(val => val !== '');
+
+    selects.forEach(select => {
+        const currentValue = select.value;
+        Array.from(select.options).forEach(option => {
+            if (option.value === "" || option.value === currentValue) {
+                option.disabled = false;
+            } else {
+                option.disabled = selectedValues.includes(option.value);
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateRoomTypeOptions();
+
+    document.getElementById('roomContainer').addEventListener('change', function (event) {
+        if (event.target.classList.contains('rtype')) {
+            updateRoomTypeOptions();
+        }
+    });
+
+    // If you have dynamic add room functionality, call updateRoomTypeOptions after adding a new row
+});
+</script>
+<script>
     window.roomTypes = <?= json_encode($roomTypes); ?>;
 </script>
 <script src="/assets/js/room-management.js"></script>

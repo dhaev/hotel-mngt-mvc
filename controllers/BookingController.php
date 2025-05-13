@@ -28,6 +28,15 @@ class BookingController extends Controller {
             $end_date = ValidationHelper::sanitizeInput($_POST['end_date']);
             $room = $_POST['room']; // Array of room types and quantities
 
+            // Check for duplicate room types
+            $rtypeIds = array_column($room, 'rtype');
+            if (count($rtypeIds) !== count(array_unique($rtypeIds))) {
+                $this->renderView('booking/add', [
+                    'error' => 'Each room type can only be selected once.',
+                ]);
+                return;
+            }
+
             if (isset($_SESSION['email']) && isset($_SESSION['CustomerID'])) {
                 $user_id = $_SESSION['CustomerID'];
             } else {
@@ -107,6 +116,22 @@ class BookingController extends Controller {
             $start_date = ValidationHelper::sanitizeInput($_POST['start_date']);
             $end_date = ValidationHelper::sanitizeInput($_POST['end_date']);
             $rooms = $_POST['room']; // Array of room types and quantities
+
+            // Check for duplicate room types
+            $rtypeIds = array_column($rooms, 'rtype');
+            if (count($rtypeIds) !== count(array_unique($rtypeIds))) {
+                // Re-render the edit view with error
+                $reservation = BookingModel::getBookingById($reservationId);
+                $roomDetails = BookingModel::getBookingDetails($reservationId);
+                $roomTypes = RoomTypeModel::getAllRoomTypes();
+                $this->renderView('booking/edit', [
+                    'reservation' => $reservation,
+                    'roomDetails' => $roomDetails,
+                    'roomTypes' => $roomTypes,
+                    'error' => 'Each room type can only be selected once.'
+                ]);
+                return;
+            }
 
             global $conn;
 
