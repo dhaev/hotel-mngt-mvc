@@ -128,11 +128,11 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateRoomTypeOptions() {
-        // Get all selected values
         const selects = document.querySelectorAll('.rtype');
-        const selectedValues = Array.from(selects)
-            .map(sel => sel.value)
-            .filter(val => val !== '');
+        const selectedSet = new Set();
+        selects.forEach(sel => {
+            if (sel.value) selectedSet.add(sel.value);
+        });
 
         selects.forEach(select => {
             const currentValue = select.value;
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (option.value === "" || option.value === currentValue) {
                     option.disabled = false;
                 } else {
-                    option.disabled = selectedValues.includes(option.value);
+                    option.disabled = selectedSet.has(option.value);
                 }
             });
         });

@@ -63,8 +63,8 @@ class BookingController extends Controller {
             try {
                 $line_item_array = [];
                 foreach ($room as $value) {
-                    $rtype = $value['rtype'];
-                    $numr = $value['numr'];
+                    $rtype = ValidationHelper::sanitizeInput($value['rtype']);
+                    $numr = ValidationHelper::sanitizeInput($value['numr']);
                     $room_type_details = RoomTypeModel::getRoomTypeById($rtype);
                     $pricePerRoom = $room_type_details["price"];
                     $roomtype = $room_type_details["rtype"];
